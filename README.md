@@ -1,8 +1,8 @@
 # Deep Agents Lab
 
-Deployment template for a deep agent built with `create_deep_agent(...)`.
+Deployment lab for a deep agent built with `create_deep_agent(...)`.
 
-## What this template gives you
+## What this lab gives you
 
 - **Modern Graph Structure**: A deployable deep agent graph at `src/deep_agent/agents/graph.py`.
 - **Advanced Workflow**: Explicit workflow prompt (plan, delegate, critique, finalize).

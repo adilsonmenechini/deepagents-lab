@@ -1,1 +1,1 @@
-"""Deep agent template package."""
+"""Deep agent lab package."""
