@@ -1,58 +1,71 @@
-# Deep Agents Template
+# Deep Agents Lab
 
 Deployment template for a deep agent built with `create_deep_agent(...)`.
 
 ## What this template gives you
 
-- A deployable deep agent graph at `src/deep_agent/graph.py`.
-- Explicit workflow prompt (plan, delegate, critique, finalize).
-- Two predefined sub-agents (`researcher`, `critic`).
-- Human-in-the-loop interrupts on `execute` and `write_file`.
-- A `uv`-managed local workflow with a small `Makefile` wrapper and starter tests.
+- **Modern Graph Structure**: A deployable deep agent graph at `src/deep_agent/agents/graph.py`.
+- **Advanced Workflow**: Explicit workflow prompt (plan, delegate, critique, finalize).
+- **Sub-Agents**: Predefined specialized sub-agents (`researcher`, `critic`) located in `src/deep_agent/agents/contexts/prompt.py`.
+- **Custom Tools**: Built-in tools for Git operations, web searching, and task management.
+- **Human-in-the-loop**: Interrupts on sensitive actions like `execute` and `write_file`.
+- **Configurable Backend**: Option to toggle between LangSmith Sandboxes and local execution.
 
 ## Prerequisites
 
-- An API key for your model provider (Anthropic by default)
-- A [LangSmith](https://smith.langchain.com/) account (Plus plan or higher) to deploy
+- An API key for your model provider (OpenRouter used in this lab).
+- A [LangSmith](https://smith.langchain.com/) account for tracing and optional sandboxes.
 
-## Quickstart
+## Configuration
 
-1. Sync the project and configure environment:
+1. **Sync the project**:
+   ```bash
+   uv sync
+   cp .env.example .env
+   ```
 
-```bash
-uv sync
-cp .env.example .env
+2. **Setup your `.env`**:
+   - `model`: Model ID (e.g., `openrouter:google/gemini-2.0-flash-lite-001`).
+   - `api_key`: Your provider API key.
+   - `USE_SANDBOX`: Set to `false` to disable LangSmith Sandboxes if you don't have a Plus plan or want to run locally.
+
+## Available Tools
+
+The agent comes with the following custom tools defined in `src/deep_agent/agents/tools/`:
+- **Git**: `get_git_status`, `get_git_diff` for repository awareness.
+- **Search**: `web_search` (DuckDuckGo with security hardening).
+- **Tasks**: `write_todos` for managing project task lists.
+- **Utilities**: `utc_now` for time-aware operations.
+
+## Development
+
+1. **Start the dev server**:
+   ```bash
+   uv run langgraph dev
+   ```
+
+2. **Run tests and linting**:
+   ```bash
+   make test
+   make lint
+   make format
+   ```
+
+## Structure
+
+```text
+src/deep_agent/
+├── agents/             # Core agent logic
+│   ├── contexts/       # Prompts and agent definitions
+│   ├── tools/          # Custom tool implementations
+│   ├── skills/         # Complex behaviors (if any)
+│   ├── graph.py        # Main LangGraph entry point
+│   └── sandbox.py      # Backend configuration
+├── llm.py              # LLM initialization
+└── settings.py         # Configuration management
 ```
-
-2. Start the dev server:
-
-```bash
-uv run langgraph dev
-```
-
-3. Deploy to LangSmith:
-
-```bash
-uv run langgraph deploy
-```
-
-See the [CLI docs](https://docs.langchain.com/langsmith/cli#deploy) for deploy options.
-
-To set up CI instead, push this repo to GitHub and configure your deployment through the LangSmith UI.
-
-## Tests and lint
-
-```bash
-make test
-make integration-tests
-make lint
-make format
-```
-
-Integration tests are skipped unless `ANTHROPIC_API_KEY` is set.
 
 ## Reference docs
 
-- Deep Agents overview: https://docs.langchain.com/oss/python/deepagents/overview
-- Deep Agents quickstart: https://docs.langchain.com/oss/python/deepagents/quickstart
-- LangSmith CLI: https://docs.langchain.com/langsmith/cli
+- LangGraph: [https://langchain-ai.github.io/langgraph/](https://langchain-ai.github.io/langgraph/)
+- Deep Agents: [https://docs.langchain.com/oss/python/deepagents/overview](https://docs.langchain.com/oss/python/deepagents/overview)
