@@ -12,8 +12,7 @@ from langgraph_sdk.runtime import ServerRuntime
 from deep_agent.settings import settings
 
 from deep_agent.agents.sandbox import get_or_create_sandbox
-from deep_agent.agents.contexts.prompt import SUBAGENTS
-from deep_agent.agents.contexts.prompt import SYSTEM_PROMPT
+from deep_agent.agents.schema import get_agent_definitions
 from deep_agent.agents.tools import AGENT_TOOLS
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -21,16 +20,17 @@ checkpointer = MemorySaver()
 
 
 def _build_agent(backend=None):
+    system_prompt, subagents, skills, interrupt_on = get_agent_definitions()
     return create_deep_agent(
         model=llm,
         tools=AGENT_TOOLS,
         backend=backend,
-        system_prompt=SYSTEM_PROMPT,
-        subagents=SUBAGENTS,
-        skills=["src/deep_agent/agents/skills"],
-        memory="src/deep_agent/agents/contexts/AGENTS.md",
-        # You can disable these if you want to run without interrupts
-        interrupt_on={"execute": True, "write_file": True},
+        system_prompt=system_prompt,
+        subagents=subagents,
+        skills=skills,
+        memory="AGENTS.md",
+        # These are now dynamic based on lead-1 policies in JSON
+        interrupt_on=interrupt_on,
         name="deep_agent",
         checkpointer=checkpointer,
     )

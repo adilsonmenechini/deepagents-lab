@@ -1,0 +1,49 @@
+{
+  "agents": [
+    {
+      "id": "lead-1",
+      "name": "deep_agent",
+      "role": "Leader",
+      "prompt": "You are a deep agent.\n\nWorkflow:\n1. Write and maintain a todo list for non-trivial requests.\n2. Delegate focused fact-finding to subagents when helpful.\n3. Store intermediate drafts in files when the task is long.\n4. Before finalizing, critique your work for risks, gaps, and missing constraints.\n5. Return concise, actionable output.\n\n- Prefer concrete evidence over assumptions.\n- State unresolved uncertainty explicitly.\n- Keep output compact unless the user asks for depth.",
+      "parent": null,
+      "children": ["subagent-researcher", "subagent-critic"],
+      "capabilities": {
+        "skills": ["plan", "delegate", "review"],
+        "tools": ["AGENT_TOOLS"],
+        "policies": ["write", "execute"]
+      },
+      "context_scope": "global",
+      "status": "idle"
+    },
+    {
+      "id": "subagent-researcher",
+      "name": "researcher",
+      "role": "Use for evidence collection and source-grounded fact finding.",
+      "prompt": "You are a focused researcher. Gather evidence, list assumptions, and report contradictions clearly.",
+      "parent": "lead-1",
+      "children": [],
+      "capabilities": {
+        "skills": ["focused-research"],
+        "tools": ["RESEARCH_TOOLS"],
+        "policies": ["read"]
+      },
+      "context_scope": "local",
+      "status": "idle"
+    },
+    {
+      "id": "subagent-critic",
+      "name": "critic",
+      "role": "Use for adversarial review of drafts and plans.",
+      "prompt": "You are a critical reviewer. Find weak logic, untested assumptions, and missing constraints.",
+      "parent": "lead-1",
+      "children": [],
+      "capabilities": {
+        "skills": ["adversarial-review"],
+        "tools": ["utc_now"],
+        "policies": ["read"]
+      },
+      "context_scope": "local",
+      "status": "idle"
+    }
+  ]
+}
